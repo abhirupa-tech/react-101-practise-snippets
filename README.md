@@ -8,6 +8,26 @@
 
 ---
 
+## Running the practice app
+
+This repo ships a small React app that hosts all 100 drills.
+
+```bash
+npm install
+npm run dev        # http://localhost:5173
+```
+
+- **Home** — a virtualized card grid of every drill (search + difficulty filter).
+- **`/task/<slug>`** — three columns: a floating nav (10 drills before / 10 after),
+  the live implementation (middle), and a color-coded terminal source preview (right).
+- Drill metadata lives in `src/data/tasks.json`, generated from this file via
+  `npm run gen:tasks`. To add a live demo, drop a default-exported component at
+  `src/tasks/<slug>.tsx` — it renders automatically, with its source in the terminal.
+
+Stack: Vite · React 19 · TypeScript · Tailwind v4 · React Router · `@tanstack/react-virtual` · Shiki.
+
+---
+
 ## Section 1 — React Core Mechanics (the "do you actually know why" set)
 
 1. 🟢 **The Liar's Counter** — Build a counter where clicking +1 three times fast only increments once visually until a re-render forces it. Explain *why* batching does this.
