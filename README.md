@@ -1,189 +1,207 @@
-# 100 Unassisted Coding Drills: React Fundamentals → Agent UI Infra
+# React Practice Drills
 
-**Rules of engagement:**
-- No AI autocomplete, no Copilot, no asking Claude for the answer.
-- Time-box each one (15–45 min depending on weight). If you blow the box, stop, note the gap, move on.
-- Say it out loud when done: explain what you built in under 90 seconds like a panel just asked.
-- Difficulty: 🟢 warm-up · 🟡 real rust-check · 🔴 senior-bar / staff-signal
+100 small React exercises, built to keep fundamentals sharp in a world where everything is AI-assisted and vibe-coded.
+
+The rules are simple: no AI autocomplete, no Copilot, time-boxed sessions. Just you and the problem. Each drill has a starter template (broken or empty) and a solution you can reveal once you've had a go.
+
+**Feel free to fork this and make it your own.** Swap out my drills for whatever gaps you want to close.
 
 ---
 
-## Running the practice app
+## What's in here
 
-This repo ships a small React app that hosts all 100 drills.
+10 sections, 10 drills each, ramping from React basics up to agent UI infrastructure:
+
+| Section | Topic |
+|---|---|
+| 1 | React Core Mechanics — batching, keys, closures, portals |
+| 2 | Hooks From Scratch — build useDebounce, useFetch, useUndo, etc. |
+| 3 | State, Re-renders & Memoization — memo, useMemo, useCallback, context |
+| 4 | Forms, Events & Real-World Inputs |
+| 5 | Component Design Patterns — compound components, HOCs, headless |
+| 6 | Performance & Rendering Internals — virtualization, Suspense, transitions |
+| 7 | Async, Data Fetching & Race Conditions |
+| 8 | Streaming & Agent UI Fundamentals — typewriter, SSE, cancelable streams |
+| 9 | Protocol-Level Agent Infra — AG-UI, tool calls, state machines |
+| 10 | Mini Systems — build useState, a router, a pub-sub store from scratch |
+
+Difficulty: 🟢 warm-up · 🟡 real rust-check · 🔴 senior-bar
+
+---
+
+## Running it locally
 
 ```bash
+git clone https://github.com/your-username/react-101-practise-snippets
+cd react-101-practise-snippets
 npm install
 npm run dev        # http://localhost:5173
 ```
 
-- **Home** — a virtualized card grid of every drill (search + difficulty filter).
-- **`/task/<slug>`** — three columns: a floating nav (10 drills before / 10 after),
-  the live implementation (middle), and a color-coded terminal source preview (right).
-- Drill metadata lives in `src/data/tasks.json`, generated from this file via
-  `npm run gen:tasks`. To add a live demo, drop a default-exported component at
-  `src/tasks/<slug>.tsx` — it renders automatically, with its source in the terminal.
+---
 
-Stack: Vite · React 19 · TypeScript · Tailwind v4 · React Router · `@tanstack/react-virtual` · Shiki.
+## How the app works
+
+**Home page** — a searchable, filterable grid of all 100 drills.
+
+**Drill page** — click any card to open a drill. You get:
+- A live preview pane on the left showing the running component
+- The source code on the right
+- An **Exercise / Solution toggle** in the header
+
+The toggle switches between the starter file (`001-slug-default.tsx`) and the solution file (`001-slug-solved.tsx`). By default the solution file is identical to the starter — that's intentional. You solve it yourself first, then overwrite the solved file with your answer.
+
+**Adding your own solutions:** navigate to `src/tasks/`, find the `NNN-slug-solved.tsx` file for the drill you just built, and replace its contents with your implementation. It will hot-reload instantly in the preview pane.
 
 ---
 
-## Section 1 — React Core Mechanics (the "do you actually know why" set)
+## Stack
 
-1. 🟢 **The Liar's Counter** — Build a counter where clicking +1 three times fast only increments once visually until a re-render forces it. Explain *why* batching does this.
-2. 🟢 **Key Crime Scene** — Render a list using array index as `key`, then reorder/filter it and watch state attached to list items scramble. Fix it. Explain the reconciliation bug in one sentence.
-3. 🟡 **The Stale Closure Trap** — Write a `setInterval`-based counter inside `useEffect` that "freezes" at 1 due to a stale closure. Then fix it two different ways (functional update vs. ref).
-4. 🟡 **Strict Mode Double-Fire** — Build a component that calls an API in `useEffect` and visibly logs the double-invoke in dev Strict Mode. Explain why it's safe in prod.
-5. 🟡 **useLayoutEffect or Bust** — Build a tooltip that flickers/jumps with `useEffect` measuring DOM position, then fix the flicker by switching to `useLayoutEffect`.
-6. 🔴 **Controlled Chaos** — Build the same text input as both controlled and uncontrolled, then deliberately break the controlled one by forgetting `onChange`. Narrate the React warning from memory.
-7. 🟢 **Fragment Detective** — Render a list of siblings without a wrapper `div` using `<>...</>`, then explain when you'd be forced to use `React.Fragment` with a `key` instead.
-8. 🟡 **Portal to the Underworld** — Build a modal using `createPortal` that escapes a `overflow: hidden` parent. Explain why a regular nested div couldn't.
-9. 🟡 **Event Pooling Ghost Story** — Log a synthetic event object asynchronously (after a `setTimeout`) and explain what you see and why (React 17+ vs older behavior).
-10. 🔴 **Render Count Detective** — Add a render counter (via `useRef`) to 3 nested components and figure out, by reasoning alone before testing, which ones re-render when a grandparent's unrelated state changes.
+Vite · React 19 · TypeScript · Tailwind v4 · React Router v7 · `@tanstack/react-virtual` · Shiki
 
 ---
 
-## Section 2 — Hooks From Scratch (build the thing the library hides from you)
+## How to use this
 
-11. 🟡 **`useDebounce`** — From scratch, no lodash. Use it on a search input that hits a fake API.
-12. 🟡 **`useThrottle`** — From scratch. Use it on a scroll handler.
+**Suggested pace:**
+- Weeks 1–2: Sections 1–3 (core mechanics, hooks, re-renders) — diagnostic and de-rust
+- Weeks 2–3: Sections 4–6 (forms, patterns, performance) — fill in gaps from the diagnostic
+- Week 3: Section 7 (async / race conditions) — comes up constantly in senior interviews
+- Week 3–4: Sections 8–9 (streaming + agent UI) — research and portfolio work in parallel
+- Any time you want a deep-dive day: Section 10 — highest signal, most fun once you're warmed up
+
+**One rule that helps:** after each drill, explain what you built out loud in under 90 seconds, like a panel just asked "walk me through this." It surfaces the gaps that working code hides.
+
+---
+
+## The 100 drills
+
+### Section 1 — React Core Mechanics
+
+1. 🟢 **The Liar's Counter** — Build a counter where clicking +1 three times fast only increments once. Explain why batching does this.
+2. 🟢 **Key Crime Scene** — Render a list keyed by index, reorder it, watch state scramble. Fix it. One sentence on the reconciliation bug.
+3. 🟡 **The Stale Closure Trap** — `setInterval` counter freezes at 1. Fix it two ways: functional update and ref.
+4. 🟡 **Strict Mode Double-Fire** — `useEffect` logs twice in dev. Explain why, add cleanup so the double-fire is harmless.
+5. 🟡 **useLayoutEffect or Bust** — Tooltip flickers with `useEffect`. Switch to `useLayoutEffect`. Explain the timing difference.
+6. 🔴 **Controlled Chaos** — Build controlled and uncontrolled inputs side by side. Break the controlled one deliberately. Narrate the React warning.
+7. 🟢 **Fragment Detective** — Render siblings without a wrapper `div`. Explain when you need `React.Fragment` with a `key`.
+8. 🟡 **Portal to the Underworld** — Modal using `createPortal` that escapes `overflow: hidden`. Explain why nesting can't solve it.
+9. 🟡 **Event Pooling Ghost Story** — Log a synthetic event asynchronously. Explain what you see (React 17+ vs older).
+10. 🔴 **Render Count Detective** — Reason out which of 3 nested components re-renders when a grandparent's unrelated state changes. Verify with `useRef` counters.
+
+### Section 2 — Hooks From Scratch
+
+11. 🟡 **`useDebounce`** — No lodash. Use it on a search input.
+12. 🟡 **`useThrottle`** — No lodash. Use it on a scroll handler.
 13. 🟡 **`usePrevious`** — Track and display the previous value of a piece of state.
-14. 🟡 **`useToggle`** — Tiny, but explain why you'd extract this instead of inlining `!state`.
-15. 🔴 **`useFetch` with Abort** — Custom data-fetching hook with loading/error/data states AND `AbortController` cleanup on unmount.
-16. 🔴 **`useLocalStorage` Sync Hook** — Persist state to localStorage, sync across multiple components reading the same key.
-17. 🟡 **`useOnClickOutside`** — Classic dropdown-closer. Build it with refs + event listeners, clean up properly.
-18. 🔴 **`useInterval` the Dan Abramov Way** — Implement the ref-based pattern that solves the stale closure problem from Drill #3, generically.
-19. 🟡 **`useMediaQuery`** — Responsive hook reacting to window resize, no library.
-20. 🔴 **`useUndo`** — A hook that gives you `state, setState, undo, redo` with a history stack. (This is secretly a mini reducer pattern — notice that.)
+14. 🟡 **`useToggle`** — Tiny, but articulate why you'd extract it.
+15. 🔴 **`useFetch` with Abort** — loading / error / data states + `AbortController` cleanup on unmount.
+16. 🔴 **`useLocalStorage` Sync Hook** — Persist state to localStorage, sync across multiple components on the same key.
+17. 🟡 **`useOnClickOutside`** — Classic dropdown-closer. Refs + event listeners, clean up properly.
+18. 🔴 **`useInterval` the Dan Abramov Way** — The ref-based pattern that solves the stale closure problem generically.
+19. 🟡 **`useMediaQuery`** — Responsive hook reacting to resize, no library.
+20. 🔴 **`useUndo`** — `state, setState, undo, redo` with a history stack. (It's secretly a reducer pattern.)
 
----
+### Section 3 — State, Re-renders & Memoization
 
-## Section 3 — State, Re-renders & Memoization (the interview-killer topics)
+21. 🟢 **Memo Myth-Buster** — `React.memo` still re-renders because you pass an inline arrow. Fix with `useCallback`.
+22. 🟡 **The Expensive Calculation** — Deliberately slow function, with and without `useMemo`. Visible lag difference.
+23. 🟡 **Object Identity Trap** — `{ a: 1 }` inline as a prop breaks memoization. Prove it, fix it.
+24. 🔴 **Context Re-render Bomb** — One context update re-renders all 5 consumers. Split context to fix it.
+25. 🟡 **Lifting State Properly** — Two siblings duplicating state. Lift to the right ancestor, no Context.
+26. 🔴 **Derived State Anti-Pattern** — `useState(prop)` breaks on prop change. Derive instead of store.
+27. 🟡 **Reducer Refactor** — 5 `useState` calls that always update together → one `useReducer`.
+28. 🔴 **The `key` Reset Trick** — Use a changing `key` to intentionally force-remount and reset state.
+29. 🟡 **Batched vs Unbatched** — State updates inside a native DOM listener are not batched. Explain `flushSync`.
+30. 🔴 **Diffing Two Lists** — Write the pseudocode for how React's reconciler handles old/new arrays + keys.
 
-21. 🟢 **Memo Myth-Buster** — Build a component wrapped in `React.memo` that *still* re-renders every time because you pass an inline arrow function as a prop. Fix it with `useCallback`.
-22. 🟡 **The Expensive Calculation** — Build a component with a deliberately slow function (nested loop), wire it with and without `useMemo`, and visibly show the lag difference.
-23. 🟡 **Object Identity Trap** — Pass `{ a: 1 }` inline as a prop every render, prove via console logs that it breaks memoization, fix with `useMemo`.
-24. 🔴 **Context Re-render Bomb** — Build a Context Provider wrapping 5 consumers; change one piece of context state and prove ALL consumers re-render. Then split context to fix it.
-25. 🟡 **Lifting State Properly** — Take two sibling components silently duplicating the same state and lift it to the right common ancestor — no Context, no library.
-26. 🔴 **Derived State Anti-Pattern** — Build a component that wrongly copies a prop into state via `useState(prop)`, show the bug when prop changes, then fix it by deriving instead of storing.
-27. 🟡 **Reducer Refactor** — Take a component with 5 separate `useState` calls that always update together, refactor into one `useReducer`.
-28. 🔴 **The `key` Reset Trick** — Use a changing `key` prop to intentionally force-remount a component and reset all its internal state, on purpose, as a pattern (not a bug this time).
-29. 🟡 **Batched vs Unbatched** — Trigger 2 state updates inside a native DOM event listener (not a React handler) and observe they're NOT batched pre-React 18. Explain `flushSync`.
-30. 🔴 **Diffing Two Lists** — Without React, by hand, write the pseudocode/logic for how React's reconciler decides whether to update vs. replace a list item given old/new arrays + keys.
+### Section 4 — Forms, Events & Real-World Inputs
 
----
+31. 🟢 **Controlled Form Survival Kit** — Text, checkbox, select, radio — all controlled, single `handleChange`.
+32. 🟡 **Debounced Live Validation** — Email field validates 400ms after typing stops.
+33. 🟡 **File Upload Preview** — Image preview before upload using `FileReader` or object URLs.
+34. 🟡 **Multi-Step Wizard** — 3-step form, state preserved across steps, progress indicator.
+35. 🔴 **Optimistic Form Submit** — Show success immediately, roll back if the fake API fails.
+36. 🟢 **Keyboard Navigable List** — Arrow-key up/down, Enter to select. No mouse required.
+37. 🟡 **Drag to Reorder** — Native HTML5 drag events, no library.
+38. 🟡 **Custom Checkbox Group with "Select All"** — Includes the indeterminate state.
+39. 🔴 **Debounced Autosave** — Textarea saves 1s after typing stops. Shows Saving… / Saved. Cancels correctly.
+40. 🟡 **Accessible Modal Focus Trap** — Tab stays inside the modal. Focus returns to trigger on close.
 
-## Section 4 — Forms, Events & Real-World Inputs
+### Section 5 — Component Design Patterns
 
-31. 🟢 **Controlled Form Survival Kit** — Multi-field form (text, checkbox, select, radio) all controlled, single `handleChange` using `name` attribute.
-32. 🟡 **Debounced Live Validation** — Email field that validates 400ms after the user stops typing, shows inline error.
-33. 🟡 **File Upload Preview** — Controlled file input showing an image preview before upload, using `FileReader` or object URLs.
-34. 🟡 **Multi-Step Wizard** — 3-step form with state preserved across steps and a progress indicator, no router.
-35. 🔴 **Optimistic Form Submit** — Submit a form, immediately show success UI, then roll back gracefully if the (fake, delayed) API call fails.
-36. 🟢 **Keyboard Navigable List** — Arrow-key up/down navigation through a list of items, Enter to "select."
-37. 🟡 **Drag to Reorder** — Basic drag-and-drop reordering of a list using native HTML5 drag events (no library).
-38. 🟡 **Custom Checkbox Group with "Select All"** — Indeterminate checkbox state included.
-39. 🔴 **Debounced Autosave** — A textarea that "saves" to a fake backend 1s after typing stops, shows a "Saving… / Saved" status, cancels in-flight saves correctly.
-40. 🟡 **Accessible Modal Focus Trap** — Modal that traps Tab focus inside it and returns focus to the trigger button on close.
+41. 🟡 **Compound Components** — `<Tabs><Tab/><Tab/></Tabs>` with Context internally, no prop drilling.
+42. 🔴 **Render Props Pattern** — `<MouseTracker render={(pos) => ...} />` then explain why hooks replaced it.
+43. 🟡 **Higher-Order Component** — `withLoading(Component)` HOC, then the same as a hook.
+44. 🟡 **Polymorphic Component (`as` prop)** — `<Button as="a">` with correct TypeScript typing.
+45. 🔴 **Slot Pattern** — `<Card>` with named `header`, `footer`, `children` slots.
+46. 🟡 **Controlled/Uncontrolled Hybrid** — One component that works both ways depending on what props are passed.
+47. 🟢 **Skeleton Loader Component** — Generic `<Skeleton width height />` across different shapes.
+48. 🔴 **Error Boundary From Scratch** — Class component `componentDidCatch`, deliberate throw, fallback UI.
+49. 🟡 **Provider Pattern for Theming** — Light/dark via Context + `useTheme()`, no external lib.
+50. 🔴 **Headless Component** — `useAccordion()` returns state + handlers with zero markup. Two different-looking UIs from the same hook.
 
----
+### Section 6 — Performance & Rendering Internals
 
-## Section 5 — Component Design Patterns
-
-41. 🟡 **Compound Components** — Build `<Tabs><Tab/><Tab/></Tabs>` using Context internally, no prop drilling.
-42. 🔴 **Render Props Pattern** — Build a `<MouseTracker render={(pos) => ...} />` component, then explain why hooks mostly replaced this pattern.
-43. 🟡 **Higher-Order Component** — Write a `withLoading(Component)` HOC, then rewrite the same logic as a hook and compare.
-44. 🟡 **Polymorphic Component (`as` prop)** — A `<Button as="a">` that renders different elements based on a prop, with correct TypeScript typing.
-45. 🔴 **Slot Pattern** — Build a `<Card>` component accepting `header`, `footer`, and `children` as distinct named slots.
-46. 🟡 **Controlled/Uncontrolled Hybrid** — Build one component that works BOTH controlled (`value`+`onChange` passed) and uncontrolled (internal state) depending on what's passed in.
-47. 🟢 **Skeleton Loader Component** — Generic `<Skeleton width height />` reusable across different shapes.
-48. 🔴 **Error Boundary From Scratch** — Class component implementing `componentDidCatch`, wrapping a component that deliberately throws, with a fallback UI.
-49. 🟡 **Provider Pattern for Theming** — Light/dark theme via Context + a `useTheme()` hook, no external lib.
-50. 🔴 **Headless Component** — Build a `useAccordion()` hook that returns state + handlers only, with ZERO markup, then render two completely different-looking accordions using it.
-
----
-
-## Section 6 — Performance & Rendering Internals
-
-51. 🟡 **Virtualized List, By Hand** — Render only the visible rows of a 10,000-item list based on scroll position (the windowing math, no `react-window`).
-52. 🔴 **Code-Splitting with Suspense** — `React.lazy()` + `<Suspense fallback>` for a route, visibly show the loading boundary.
+51. 🟡 **Virtualized List, By Hand** — Only render visible rows of a 10,000-item list. No `react-window`.
+52. 🔴 **Code-Splitting with Suspense** — `React.lazy()` + `<Suspense fallback>` for a route.
 53. 🟡 **Image Lazy Load with IntersectionObserver** — No library, native observer.
-54. 🔴 **Concurrent Rendering Demo** — Use `useTransition` to keep a search input responsive while filtering a huge list, show the difference with/without it.
-55. 🟡 **Avoiding Prop Drilling Without Context** — Refactor a 4-level-deep prop chain using component composition instead of Context (the "right" first fix before reaching for Context).
-56. 🔴 **`useDeferredValue` Race** — Build a UI where stale results visibly persist briefly during fast typing, intentionally, to understand the trade-off.
-57. 🟡 **Bundle Diet** — Take a component importing a whole library for one function, replace with a native equivalent, and explain bundle size impact.
-58. 🟡 **Memoized Selector Pattern** — Mimic Redux/Reselect-style derived-state memoization manually with `useMemo`.
-59. 🔴 **Profiler API Hunt** — Use React's `<Profiler>` component to actually measure and log render durations of a suspect component.
-60. 🟡 **Animation Without Re-render** — Animate something (e.g. a progress bar) using refs + direct DOM manipulation instead of state, and explain why that avoids re-renders.
+54. 🔴 **Concurrent Rendering Demo** — `useTransition` keeps a search input responsive during a slow filter.
+55. 🟡 **Avoiding Prop Drilling Without Context** — Component composition fixes a 4-level prop chain before you reach for Context.
+56. 🔴 **`useDeferredValue` Race** — Stale results persist briefly during fast typing, intentionally.
+57. 🟡 **Bundle Diet** — Replace a whole-library import with a native equivalent.
+58. 🟡 **Memoized Selector Pattern** — Reselect-style derived state with `useMemo`.
+59. 🔴 **Profiler API Hunt** — `<Profiler>` to measure and log render durations.
+60. 🟡 **Animation Without Re-render** — Animate via ref + direct DOM, not state.
 
----
+### Section 7 — Async, Data Fetching & Race Conditions
 
-## Section 7 — Async, Data Fetching & Race Conditions
+61. 🟡 **The Classic Race Condition** — Slow fetch overwrites fast fetch result. Fix it.
+62. 🔴 **Cancel-on-Unmount** — `setState` after unmount warning. Fix with `AbortController`.
+63. 🟡 **Retry with Backoff** — Fetch wrapper, 3 retries, increasing delay.
+64. 🟡 **Polling Hook** — `usePolling(fn, interval)` that stops cleanly on unmount.
+65. 🔴 **Cache-Then-Network** — Show cached data immediately, silently refetch, update on diff.
+66. 🟡 **Parallel vs Sequential Fetches** — `Promise.all` vs sequential `await`, timing logs.
+67. 🔴 **Dependent Fetch Chain** — Fetch user → fetch their posts. Model each loading state.
+68. 🟡 **Optimistic List Add/Remove** — Add immediately, roll back on failure.
+69. 🔴 **Deduping In-Flight Requests** — Two components requesting the same resource → one network call.
+70. 🟡 **Error Boundary + Async Errors** — Why Error Boundaries don't catch async errors, and how to handle them.
 
-61. 🟡 **The Classic Race Condition** — Fire two fetches for different search terms in quick succession, show the slow one overwriting the fast one's correct result, then fix it.
-62. 🔴 **Cancel-on-Unmount** — A fetch inside `useEffect` that updates state after the component has already unmounted — show the warning, then fix with cleanup/AbortController.
-63. 🟡 **Retry with Backoff** — A fetch wrapper that retries a failing fake endpoint 3 times with increasing delay.
-64. 🟡 **Polling Hook** — `usePolling(fn, interval)` that stops cleanly on unmount or on a `stop()` call.
-65. 🔴 **Cache-Then-Network** — Show cached data immediately, then silently refetch and update if new data differs (basic SWR-style behavior, hand-rolled).
-66. 🟡 **Parallel vs Sequential Fetches** — Fetch 3 independent resources in parallel with `Promise.all`, then show why sequential `await` would be slower, with timing logs.
-67. 🔴 **Dependent Fetch Chain** — Fetch a user, then use their ID to fetch their posts — model the loading states correctly for each stage.
-68. 🟡 **Optimistic List Add/Remove** — Add an item to a list immediately, roll back if the fake API call fails.
-69. 🔴 **Deduping In-Flight Requests** — Two components both request the same resource simultaneously; ensure only ONE network call fires (hand-rolled, no React Query).
-70. 🟡 **Error Boundary + Async Errors** — Show why Error Boundaries do NOT catch errors inside event handlers or async callbacks, and demonstrate the correct way to handle those.
+### Section 8 — Streaming & Agent UI Fundamentals
 
----
+71. 🟢 **Typewriter From a String** — Reveal a string one character at a time with `setInterval`. The hello world of agent UIs.
+72. 🟡 **Real SSE Consumer** — Connect to a Server-Sent Events endpoint, render chunks live.
+73. 🟡 **Cancelable Stream** — "Stop generating" button that actually aborts via `AbortController`.
+74. 🔴 **Concurrent Message Streams** — Two streams arriving interleaved. Chunks never bleed between messages.
+75. 🟡 **Batched Token Renderer** — 50ms batching window instead of per-token `setState`. Measure re-render count.
+76. 🔴 **Restart Mid-Stream** — New message while previous stream is running. Old stream discarded cleanly.
+77. 🟡 **Streaming Markdown Renderer** — Live markdown that updates without the block flickering.
+78. 🔴 **Tool Call Visualizer** — `tool_call_start` → streamed args → `tool_call_result` events render a live card.
+79. 🟡 **Loading State Machine** — `idle → thinking → streaming → tool_call → done/error` with `useReducer`.
+80. 🔴 **Mock AG-UI Event Bus** — Typed event emitter simulating AG-UI events on a timer. Component subscribes and renders.
 
-## Section 8 — Streaming & Agent UI Fundamentals (your specialization, warm-up tier)
+### Section 9 — Protocol-Level Agent Infra
 
-71. 🟢 **Typewriter From a String** — Fake "streaming" by revealing a hardcoded string one character at a time with `setInterval`. The "hello world" of agent UIs.
-72. 🟡 **Real SSE Consumer** — Connect to a real Server-Sent Events endpoint (or a tiny Express server you spin up) and render incoming chunks live.
-73. 🟡 **Cancelable Stream** — Add a "Stop generating" button that actually aborts an in-progress fetch stream (`AbortController` + `ReadableStream`).
-74. 🔴 **Concurrent Message Streams** — Two streaming "agent messages" arriving interleaved; make sure chunks never merge into the wrong message bubble.
-75. 🟡 **Batched Token Renderer** — Render incoming stream tokens with a 50ms batching window instead of per-token `setState`, and measure re-render count before/after.
-76. 🔴 **Restart Mid-Stream** — User sends a new message while a previous stream is still running — old stream must be discarded/ignored cleanly, not race into the new message.
-77. 🟡 **Streaming Markdown Renderer** — Render streamed text as Markdown that updates live without the whole block flickering/remounting each chunk.
-78. 🔴 **Tool Call Visualizer** — Mock an agent response containing `tool_call_start` → `tool_call_args` (streamed in pieces) → `tool_call_result` events; render a live-updating "card" for the tool call.
-79. 🟡 **Loading State Machine** — Model an agent's lifecycle (`idle → thinking → streaming → tool_call → done/error`) with `useReducer`, not a pile of booleans.
-80. 🔴 **Mock AG-UI Event Bus** — Build a tiny typed event emitter that simulates AG-UI's `TEXT_MESSAGE_START/CONTENT/END` and `TOOL_CALL_*` events on a timer, and a component that subscribes and renders accordingly.
+81. 🔴 **Hand-Rolled AG-UI Client** — Parse a stream of typed JSON events into rendered UI, no library.
+82. 🔴 **State Snapshot vs Delta** — `STATE_SNAPSHOT` replace vs `STATE_DELTA` patch-merge. Why deltas win at scale.
+83. 🔴 **Custom Tool Renderer Registry** — `registerToolRenderer('search_flights', Component)` so different tools get different UI.
+84. 🔴 **Trusted Proxy Pattern (BFF)** — Why your React app shouldn't call the agent runtime directly. Build the thin Node proxy.
+85. 🔴 **Token Cost Meter** — Live "$ spent so far" counter from a stream of tokens + a cost constant.
+86. 🔴 **Speculative UI / Pre-fill from Streamed Args** — Tool call arguments stream in before the call finishes. Pre-fill the UI progressively.
+87. 🟡 **Reconnect on Drop** — Simulate a dropped SSE connection. Reconnect and resume gracefully.
+88. 🔴 **Guardrail UI Pattern** — Tool call requires confirmation before executing. Human-in-the-loop, rendered.
+89. 🟡 **Multi-Agent Tabbed View** — Two agents streaming simultaneously into separate panels without state bleeding.
+90. 🔴 **Execution Trace Exporter** — Capture every event the mock agent emits, export as JSON.
 
----
+### Section 10 — Mini Systems
 
-## Section 9 — Protocol-Level Agent Infra (the differentiator tier)
-
-81. 🔴 **Hand-Rolled AG-UI Client** — Implement a minimal client that parses a stream of typed JSON events (`text_message_content`, `tool_call_start`, etc.) into rendered UI, no library.
-82. 🔴 **State Snapshot vs Delta** — Implement both a full `STATE_SNAPSHOT` replace and a `STATE_DELTA` patch-merge for agent state, and show why deltas are more efficient at scale.
-83. 🔴 **Custom Tool Renderer Registry** — Build a `registerToolRenderer('search_flights', Component)` system so different tool calls render different custom UI — the "Custom Tool Renderers" post, made real.
-84. 🔴 **Trusted Proxy Pattern (BFF)** — Stub out (architecturally, even just in comments/structure) why your React app should never call the agent runtime directly, and build the thin Node proxy layer that should sit between them.
-85. 🔴 **Token Cost Meter** — Given a stream of tokens with a per-token cost constant, build a live-updating "$ spent so far" counter — the seed of your "Cost-Aware Frontend Architecture" post.
-86. 🔴 **Speculative UI / Pre-fill from Streamed Args** — As tool call *arguments* stream in (before the call completes), progressively pre-fill a form/UI with partial data.
-87. 🟡 **Reconnect on Drop** — Simulate a dropped SSE/WebSocket connection mid-stream and implement reconnect-and-resume logic (even if "resume" just means restart gracefully with a clear UI state).
-88. 🔴 **Guardrail UI Pattern** — Build a UI affordance that intercepts a tool call requiring "confirmation" (e.g. `delete_record`) and blocks execution until the user approves — human-in-the-loop, rendered.
-89. 🟡 **Multi-Agent Tabbed View** — Render two independent simulated agents streaming simultaneously into separate panels without their state bleeding into each other.
-90. 🔴 **Execution Trace Exporter** — Capture every event your mock agent emits into an array, then export it as JSON — this IS your "Agent State Inspector" portfolio project's core engine.
-
----
-
-## Section 10 — Mini Systems (build the library to understand the library)
-
-91. 🔴 **Build Your Own `useState`** — Implement a fake `useState` using a module-level array + index pointer (the classic "build your own React hooks" exercise). Mind-bending, very high signal.
+91. 🔴 **Build Your Own `useState`** — Module-level array + index pointer. Mind-bending, very high signal.
 92. 🔴 **Build Your Own `useReducer`** — Same exercise, layered on top of #91.
-93. 🔴 **Mini Pub-Sub Store (Zustand-lite)** — `createStore(initialState)` returning `getState`, `setState`, `subscribe` — then a `useStore` hook wrapping it.
-94. 🔴 **Mini Redux (Reducer + Dispatch + Context)** — Combine reducer + Context + a `connect`-style HOC, by hand, to actually feel why Redux exists.
-95. 🟡 **Mini React Query (Cache + Stale Time)** — A `useQuery(key, fetchFn)` hook with in-memory cache and a `staleTime` before refetching.
-96. 🔴 **Mini Router** — `useState` + `window.history.pushState` based router supporting 3 routes, no library.
-97. 🟡 **Event Emitter From Scratch** — `on`, `off`, `emit` — then realize this is the backbone of drill #80's mock AG-UI bus.
-98. 🔴 **Mini Signals (Fine-Grained Reactivity)** — Implement a tiny signal/effect system (`createSignal`, `createEffect`) outside React, then explain how this relates to React Fiber's internals and libraries like `bippy`.
-99. 🔴 **Dependency Graph Resolver** — Given a list of `{id, dependsOn: []}` tasks, write a topological sort to determine valid execution order — directly reusable for any future DAG/orchestration work.
-100. 🔴🌱 **Hanachi's First Breath** — Combine drills #79 (state machine), #90 (trace exporter), and #43 (HOC/hook pattern) into the actual MVP of Hanachi: a component that visibly reacts (idle/thinking/streaming/error) to a mock agent's live event stream. This is where every drill above stops being an exercise and becomes your portfolio.
-
----
-
-## How to Use This
-
-- **Weeks 1–2:** Sections 1–3 (core mechanics, hooks, re-renders). This is your diagnostic-driven de-rust zone.
-- **Weeks 2–3:** Sections 4–6 (forms, patterns, performance). Pick based on what you fumbled in the diagnostic.
-- **Week 3:** Section 7 (async/race conditions) — these come up constantly in senior interviews.
-- **Week 3–4:** Sections 8–9 (streaming + protocol-level) — this is also your research + portfolio build, not separate work.
-- **Anytime you want a "build the library" deep-dive day:** Section 10. These are the highest staff-level signal but also the most fun once you're warmed up — #91/#92 in particular will make you feel like you finally understand React, not just use it.
-
-Don't do these in a vacuum — narrate each one out loud after building it, like a panel just asked "walk me through this."
+93. 🔴 **Mini Pub-Sub Store (Zustand-lite)** — `createStore` returning `getState, setState, subscribe` + a `useStore` hook.
+94. 🔴 **Mini Redux** — Reducer + dispatch + Context + a `connect`-style HOC. Feel why Redux exists.
+95. 🟡 **Mini React Query** — `useQuery(key, fetchFn)` with in-memory cache and `staleTime`.
+96. 🔴 **Mini Router** — `useState` + `history.pushState`, 3 routes, no library.
+97. 🟡 **Event Emitter From Scratch** — `on, off, emit`. Realise this is the backbone of the AG-UI bus in #80.
+98. 🔴 **Mini Signals (Fine-Grained Reactivity)** — `createSignal, createEffect` outside React. Relate to Fiber internals.
+99. 🔴 **Dependency Graph Resolver** — Topological sort for `{id, dependsOn[]}` tasks. Directly reusable for DAG/orchestration work.
+100. 🔴🌱 **Hanachi's First Breath** — Combine #79 (state machine) + #90 (trace exporter) + #43 (HOC/hook) into the MVP of Hanachi: a component that reacts to a mock agent's live event stream. This is where the drills become a portfolio.
