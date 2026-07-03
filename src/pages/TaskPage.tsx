@@ -8,6 +8,8 @@ import { DemoBoundary } from '../components/DemoBoundary';
 import { getTask, difficultyLabel } from '../lib/tasks';
 import { getImpl, getSource, getFilename, starterStub } from '../lib/registry';
 import { NotFoundPage } from './NotFoundPage';
+import { concepts } from '../data/concepts';
+import type { Task } from '../types';
 
 function SolutionToggle({
   value,
@@ -30,8 +32,8 @@ function SolutionToggle({
         }`}
       >
         <span
-          className={`absolute top-0.5 size-4 rounded-full bg-white shadow transition-transform ${
-            value ? 'translate-x-4' : 'translate-x-0.5'
+          className={`absolute left-0.5 top-0.5 size-4 rounded-full bg-white shadow transition-transform ${
+            value ? 'translate-x-4' : 'translate-x-0'
           }`}
         />
       </button>
@@ -39,6 +41,38 @@ function SolutionToggle({
         Solution
       </span>
     </label>
+  );
+}
+
+function EducationCard({ task }: { task: Task }) {
+  const concept = concepts[task.slug];
+  if (!concept) return null;
+
+  return (
+    <div className="mb-4 rounded-xl border border-ink-800 bg-ink-900/60 p-4">
+      <p className="mb-2 text-[11px] font-semibold uppercase tracking-wider text-ink-500">
+        Concept
+      </p>
+      <p className="mb-3 text-sm leading-relaxed text-ink-300">
+        {concept.summary}
+      </p>
+      <ul className="mb-3 space-y-1">
+        {concept.keyPoints.map((point, i) => (
+          <li key={i} className="flex gap-2 text-xs text-ink-400">
+            <span className="mt-0.5 shrink-0 text-accent">→</span>
+            <span>{point}</span>
+          </li>
+        ))}
+      </ul>
+      {concept.watchFor && (
+        <div className="rounded-lg border border-amber-500/20 bg-amber-500/5 px-3 py-2">
+          <span className="text-[11px] font-semibold uppercase tracking-wider text-amber-400">
+            Watch for:{' '}
+          </span>
+          <span className="text-xs text-amber-300/80">{concept.watchFor}</span>
+        </div>
+      )}
+    </div>
   );
 }
 
@@ -111,7 +145,8 @@ export function TaskPage() {
         <div className="mt-6 grid min-h-0 flex-1 grid-cols-1 gap-6 xl:grid-cols-2">
           {/* Left — live implementation */}
           <section className="flex min-h-0 flex-col">
-            <h2 className="mb-3 font-mono text-[11px] uppercase tracking-wider text-ink-600">
+            <EducationCard task={task} />
+            <h2 className="mb-3 mt-4 font-mono text-[11px] uppercase tracking-wider text-ink-600">
               Implementation
             </h2>
             <div className="min-h-0 flex-1 overflow-auto rounded-xl border border-ink-800 bg-ink-900/40 p-6">
