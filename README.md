@@ -5,6 +5,8 @@
 The rules are simple: no AI autocomplete, no Copilot, time-boxed sessions. Just you and the problem. Each drill has a starter template (broken or empty) and a solution you can reveal once you've had a go.
 
 **Feel free to fork this and make it your own.** Swap out my drills for whatever gaps you want to close.
+<img width="2511" height="1136" alt="Screenshot 2026-07-03 085648" src="https://github.com/user-attachments/assets/648c0ec9-9e0c-49e0-afb0-c511fbff6f0d" />
+
 
 ---
 
