@@ -1,11 +1,14 @@
-import { memo, useCallback, useRef, useState } from 'react';
+import { memo, useRef, useState } from 'react';
 
 /**
  * Drill #21 — Memo Myth-Buster
  *
  * React.memo only skips a re-render if every prop is referentially equal. Pass
  * a fresh inline arrow each render and memo is defeated — the child still
- * re-renders. Wrap the handler in useCallback and the child finally stays put.
+ * re-renders even though nothing meaningful changed.
+ *
+ * TODO: Stop the child from re-rendering on every parent re-render.
+ *       Hint: the problem is in how `handler` is defined.
  */
 const Child = memo(function Child({
   label,
@@ -33,11 +36,8 @@ export default function MemoMythBuster() {
   const [, force] = useState(0);
   const rerender = () => force((n) => n + 1);
 
-  // Fresh function identity every render → memo can't help.
-  const inlineHandler = () => {};
-
-  // Stable identity → memo works.
-  const stableHandler = useCallback(() => {}, []);
+  // BUG: fresh function identity every render → memo can't help.
+  const handler = () => {};
 
   return (
     <div className="flex flex-col gap-4">
@@ -48,15 +48,12 @@ export default function MemoMythBuster() {
         Re-render parent
       </button>
 
-      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-        <Child label="inline arrow prop (re-renders)" onClick={inlineHandler} />
-        <Child label="useCallback prop (stays put)" onClick={stableHandler} />
-      </div>
+      <Child label="memoised child" onClick={handler} />
 
       <p className="max-w-md text-xs leading-relaxed text-zinc-500">
-        Click “Re-render parent” a few times. The left child's render count
-        climbs because it gets a brand-new arrow function each time; the right
-        child is frozen at 1 thanks to <code>useCallback</code>.
+        Click "Re-render parent" a few times. The render count keeps climbing
+        even though <code>Child</code> is wrapped in <code>memo</code>. Why?
+        Fix it so the count stays at 1.
       </p>
     </div>
   );

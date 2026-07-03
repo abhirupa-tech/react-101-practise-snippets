@@ -1,4 +1,4 @@
-import { Suspense } from 'react';
+import { Suspense, useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { TaskNav } from '../components/TaskNav';
 import { Terminal } from '../components/Terminal';
@@ -6,19 +6,60 @@ import { CodeBlock } from '../components/CodeBlock';
 import { StarRating } from '../components/StarRating';
 import { DemoBoundary } from '../components/DemoBoundary';
 import { getTask, difficultyLabel } from '../lib/tasks';
-import { getImpl, getSource, hasImpl, starterStub } from '../lib/registry';
+import { getImpl, getSource, getFilename, starterStub } from '../lib/registry';
 import { NotFoundPage } from './NotFoundPage';
+
+function SolutionToggle({
+  value,
+  onChange,
+}: {
+  value: boolean;
+  onChange: (v: boolean) => void;
+}) {
+  return (
+    <label className="flex cursor-pointer select-none items-center gap-2">
+      <span className={`text-xs transition ${value ? 'text-ink-500' : 'text-ink-300'}`}>
+        Exercise
+      </span>
+      <button
+        role="switch"
+        aria-checked={value}
+        onClick={() => onChange(!value)}
+        className={`relative h-5 w-9 rounded-full transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent ${
+          value ? 'bg-emerald-500' : 'bg-ink-700'
+        }`}
+      >
+        <span
+          className={`absolute top-0.5 size-4 rounded-full bg-white shadow transition-transform ${
+            value ? 'translate-x-4' : 'translate-x-0.5'
+          }`}
+        />
+      </button>
+      <span className={`text-xs transition ${value ? 'text-emerald-300' : 'text-ink-500'}`}>
+        Solution
+      </span>
+    </label>
+  );
+}
 
 export function TaskPage() {
   const { slug = '' } = useParams();
   const task = getTask(slug);
 
+  const [showSolution, setShowSolution] = useState(false);
+
+  // Reset the toggle on every navigation (router wrapper also remounts, but
+  // this guards against any future cases where remount is skipped).
+  useEffect(() => {
+    setShowSolution(false);
+  }, [slug]);
+
   if (!task) return <NotFoundPage />;
 
-  const Impl = getImpl(slug);
-  const live = hasImpl(slug);
-  const source = getSource(slug) ?? starterStub(task);
-  const filename = `${slug}.tsx`;
+  const variant: 'default' | 'solved' = showSolution ? 'solved' : 'default';
+  const Impl     = getImpl(slug, variant);
+  const source   = getSource(slug, variant) ?? starterStub(task);
+  const filename = getFilename(task, variant);
 
   return (
     <div className="mx-auto flex min-h-screen max-w-[1600px] gap-6 px-6 py-6">
@@ -46,20 +87,20 @@ export function TaskPage() {
             )}
           </div>
 
-          <div className="mt-2 flex flex-wrap items-center gap-3">
-            <h1 className="text-xl font-semibold tracking-tight">
-              {task.title}
-            </h1>
-            <StarRating difficulty={task.difficulty} showLabel />
-            <span
-              className={`rounded-full px-2 py-0.5 text-[11px] ${
-                live
-                  ? 'border border-accent-dim bg-accent/10 text-accent'
-                  : 'border border-ink-800 text-ink-500'
-              }`}
-            >
-              {live ? 'live demo' : 'starter'}
-            </span>
+          <div className="mt-2 flex items-center justify-between gap-4">
+            <div className="flex min-w-0 flex-wrap items-center gap-3">
+              <h1 className="text-xl font-semibold tracking-tight">
+                {task.title}
+              </h1>
+              <StarRating difficulty={task.difficulty} showLabel />
+              <span className="rounded-full border border-accent-dim bg-accent/10 px-2 py-0.5 text-[11px] text-accent">
+                live demo
+              </span>
+            </div>
+
+            <div className="shrink-0">
+              <SolutionToggle value={showSolution} onChange={setShowSolution} />
+            </div>
           </div>
 
           <p className="mt-2 max-w-3xl text-sm leading-relaxed text-ink-400">
@@ -68,17 +109,17 @@ export function TaskPage() {
         </header>
 
         <div className="mt-6 grid min-h-0 flex-1 grid-cols-1 gap-6 xl:grid-cols-2">
-          {/* Middle — live implementation */}
+          {/* Left — live implementation */}
           <section className="flex min-h-0 flex-col">
             <h2 className="mb-3 font-mono text-[11px] uppercase tracking-wider text-ink-600">
               Implementation
             </h2>
             <div className="min-h-0 flex-1 overflow-auto rounded-xl border border-ink-800 bg-ink-900/40 p-6">
               {Impl ? (
-                <DemoBoundary resetKey={slug}>
+                <DemoBoundary resetKey={`${slug}-${variant}`}>
                   <Suspense
                     fallback={
-                      <div className="text-sm text-ink-500">Loading demo…</div>
+                      <div className="text-sm text-ink-500">Loading…</div>
                     }
                   >
                     <Impl />
@@ -90,14 +131,6 @@ export function TaskPage() {
                     No implementation yet — this one's yours to build.
                   </p>
                   <p className="max-w-sm text-xs text-ink-600">
-                    Drop a component at{' '}
-                    <code className="font-mono text-ink-400">
-                      src/tasks/{filename}
-                    </code>{' '}
-                    (default export) and it renders here, with its source in the
-                    terminal.
-                  </p>
-                  <p className="mt-1 text-xs text-ink-600">
                     {difficultyLabel[task.difficulty]} · time-box it · no AI.
                   </p>
                 </div>
@@ -105,7 +138,7 @@ export function TaskPage() {
             </div>
           </section>
 
-          {/* Right — terminal code preview */}
+          {/* Right — terminal source view */}
           <section className="flex min-h-0 flex-col">
             <h2 className="mb-3 font-mono text-[11px] uppercase tracking-wider text-ink-600">
               Source
