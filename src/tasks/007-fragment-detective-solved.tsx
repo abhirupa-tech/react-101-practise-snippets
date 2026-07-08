@@ -1,20 +1,35 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 
 /**
  * Drill #7 — Fragment Detective
  *
- * Render a list of siblings without a wrapper div using <>...</>, then explain when you'd be forced to use React.Fragment with a key instead.
+ * Render a dynamic list of fruits without a wrapper div using <>...</>, then explain when you'd be forced to use React.Fragment with a key instead.
  *
  * TODO: Implement this drill.
  * Difficulty: ★☆☆ · React Core Mechanics
  */
+
+
 export default function FragmentDetective() {
   const [, rerender] = useState(0);
+  const fruits = ['Apple', 'Banana', 'Cherry', 'Date', 'Elderberry'];
+  
+  const CustomList = () => {
+    return (
+      <>
+      
+      {fruits.map(fruit => (
+        <React.Fragment key={fruit}>
+          <li>{fruit}</li>
+        </React.Fragment>
+      ))}
+      </>)
+  }
 
   return (
     <div className="flex flex-col gap-4">
       <p className="text-sm text-zinc-400">
-        TODO — build your solution here.
+        <CustomList />
       </p>
       <button
         onClick={() => rerender((n) => n + 1)}
